@@ -79,7 +79,6 @@
                 )
             },
             formAdded(form){
-                console.log(form)
                 this.forms.push(form)
             }
         },

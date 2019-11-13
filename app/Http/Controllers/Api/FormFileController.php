@@ -10,25 +10,16 @@ use App\Models\FormFile;
 
 class FormFileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
-     * Show the form for creating a new resource.
+     * Upload new file.
      *
      * @return \Illuminate\Http\Response
      */
     public function upload(UploadFileRequest $request)
     {
         $file = $request->file('file');
-        $fileName = Str::random(40). '.' .$file->getClientOriginalExtension();
+        $fileName = Str::random(40) . '.' . $file->getClientOriginalExtension();
         $file->storeAs(config('uploads.folder'), $fileName);
 
         return response()->json([
@@ -37,6 +28,12 @@ class FormFileController extends Controller
         ]);
     }
 
+    /**
+     * Download file
+     * 
+     * @param FormFile $file
+     * @return \Illuminate\Http\Response
+     */
     public function download(FormFile $file)
     {
         return response()->download($file->path, $file->original_name);

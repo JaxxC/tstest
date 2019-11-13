@@ -12,6 +12,14 @@ class FormFile extends Model
         'form_id', 'name', 'original_name'
     ];
 
+    /**
+     * Get the post that owns the comment.
+     */
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
+    }
+
     public function getPathAttribute()
     {
         return storage_path('app/' . config('uploads.folder') . '/' . $this->name);

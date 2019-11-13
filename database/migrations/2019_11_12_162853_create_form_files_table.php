@@ -15,9 +15,13 @@ class CreateFormFilesTable extends Migration
     {
         Schema::create('form_files', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('form_id');
+            $table->integer('form_id')->unsigned();
             $table->string('name');
             $table->string('original_name');
+
+            $table->foreign('form_id')
+                ->references('id')->on('forms')
+                ->onDelete('cascade');
         });
     }
 

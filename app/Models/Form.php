@@ -13,6 +13,9 @@ class Form extends Model
 
     public $timestamps = false;
 
+    /**
+     * Get FormFiles related to Form
+     */
     public function files()
     {
         return $this->hasMany(FormFile::class);

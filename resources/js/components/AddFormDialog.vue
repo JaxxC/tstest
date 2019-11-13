@@ -12,7 +12,8 @@
                     type="text"
                     required
                     placeholder="Enter Form name"
-                    ></b-form-input>
+                    >
+                </b-form-input>
             </b-form-group>
             
             <input
@@ -33,7 +34,9 @@
                         size="sm" 
                         v-if="!file.uploaded"
                         :disabled="uploading===index"
-                        >Upload</b-button>
+                        >
+                        Upload
+                    </b-button>
                 </b-list-group-item>
             </b-list-group>
             
@@ -42,8 +45,7 @@
                 dismissible
                 fade
                 variant="danger"
-                @dismiss-count-down="countDownChanged"
-            >
+                @dismiss-count-down="countDownChanged">
                 File too big, please select a file less than 2mb
             </b-alert>
             
@@ -67,9 +69,7 @@
                 showAlert: 0
             }
         },
-        mounted() {
-            console.log('Component mounted.')
-        },
+        
         methods: {
             addFile() {
                 this.$refs.files.click();
@@ -109,7 +109,7 @@
                     response => {
                         this.uploading = false
                         this.percentCompleted = 0
-                        this.files[index].uploaded = response.data.fileName
+                        this.$set(this.files[index], 'uploaded', response.data.fileName)
                         this.uploaded.push({
                             name: response.data.fileName,
                             originalName:this.files[index].file.name

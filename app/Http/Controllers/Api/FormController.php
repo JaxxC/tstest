@@ -23,9 +23,9 @@ class FormController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create new form.
      *
-     * @return \Illuminate\Http\Response
+     * @return FormResource
      */
     public function create(SaveFormRequest $request)
     {
@@ -46,10 +46,10 @@ class FormController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get the specified form.
      *
      * @param  Form  $form
-     * @return \Illuminate\Http\Response
+     * @return FormResource
      */
     public function show(Form $form)
     {
