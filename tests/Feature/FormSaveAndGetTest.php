@@ -137,6 +137,7 @@ class FormSaveAndGetTest extends TestCase
             ])
             ->assertStatus(Response::HTTP_OK);
 
+        @unlink(storage_path('app/' . config('uploads.folder') . '/' . $file->name));
     }
 
     public function test_form_list()

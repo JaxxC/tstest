@@ -44,5 +44,7 @@ class FileUploadTest extends TestCase
         $this->json('GET', '/api/file/view/' . $file->id)
             ->assertStatus(Response::HTTP_OK)
             ->assertHeader('Content-Disposition', 'filename=' . $file->original_name);
+
+        @unlink(storage_path('app/' . config('uploads.folder') . '/' . $file->name));
     }
 }
