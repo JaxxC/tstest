@@ -1894,6 +1894,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1903,12 +1927,24 @@ __webpack_require__.r(__webpack_exports__);
       percentCompleted: 0,
       uploading: false,
       maxsize: 2048,
-      showAlert: 0
+      showAlert: 0,
+      alertMessage: '',
+      submitted: false
     };
   },
   methods: {
     addFile: function addFile() {
       this.$refs.files.click();
+    },
+    getListItemVariant: function getListItemVariant(index) {
+      if (this.submitted) {
+        return this.files[index].uploaded ? 'default' : 'danger';
+      } else {
+        return 'default';
+      }
+    },
+    getFileInputState: function getFileInputState(index) {
+      return this.files[index].title.length > 0 ? null : false;
     },
     uploadFieldChange: function uploadFieldChange(event) {
       var files = event.target.files || event.dataTransfer.files;
@@ -1919,9 +1955,11 @@ __webpack_require__.r(__webpack_exports__);
         if (size < this.maxsize) {
           this.files.push({
             file: files[i],
-            uploaded: null
+            uploaded: false,
+            title: files[i].name
           });
         } else {
+          this.alertMessage = 'File too big, please select a file less than 2mb';
           this.showAlert = 3;
         }
       }
@@ -1948,16 +1986,24 @@ __webpack_require__.r(__webpack_exports__);
         _this.uploading = false;
         _this.percentCompleted = 0;
 
-        _this.$set(_this.files[index], 'uploaded', response.data.fileName);
+        _this.$set(_this.files[index], 'uploaded', true);
 
         _this.uploaded.push({
           name: response.data.fileName,
+          title: _this.files[index].title,
           originalName: _this.files[index].file.name
         });
       });
     },
     onSubmit: function onSubmit() {
       var _this2 = this;
+
+      if (this.hasNotUploadedFiles()) {
+        this.submitted = true;
+        this.alertMessage = 'Some of your files are not uploaded. Please upload them before save form';
+        this.showAlert = 3;
+        return;
+      }
 
       axios.post('/api/form', {
         name: this.name,
@@ -1966,10 +2012,21 @@ __webpack_require__.r(__webpack_exports__);
         _this2.$bvModal.hide('modalAddForm');
 
         _this2.$emit('form-added', response.data.data);
+      })["catch"](function (error) {
+        _this2.showError(error);
       });
+    },
+    hasNotUploadedFiles: function hasNotUploadedFiles() {
+      return this.files.filter(function (item) {
+        return !item.uploaded;
+      }).length > 0;
     },
     countDownChanged: function countDownChanged(dismissCountDown) {
       this.showAlert = dismissCountDown;
+    },
+    showError: function showError(error) {
+      this.alertMessage = Object.values(error.response.data.errors).join('. ');
+      this.showAlert = 5;
     }
   }
 });
@@ -2096,6 +2153,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -66329,34 +66391,89 @@ var render = function() {
                 _vm._l(_vm.files, function(file, index) {
                   return _c(
                     "b-list-group-item",
-                    { key: index },
+                    {
+                      key: index,
+                      attrs: { variant: _vm.getListItemVariant(index) }
+                    },
                     [
-                      _vm._v(
-                        "\n                " +
-                          _vm._s(file.file.name) +
-                          "\n                "
-                      ),
-                      !file.uploaded
-                        ? _c(
-                            "b-button",
-                            {
-                              staticClass: "float-right",
+                      _c("div", { staticClass: "row" }, [
+                        _c(
+                          "div",
+                          { staticClass: "col-md-10" },
+                          [
+                            _c("b-form-input", {
                               attrs: {
-                                variant: "primary",
+                                id: "fileTitle" + index,
+                                placeholder: "Enter file title",
+                                disabled: file.uploaded,
                                 size: "sm",
-                                disabled: _vm.uploading === index
+                                state: _vm.getFileInputState(index)
                               },
-                              on: {
-                                click: function($event) {
-                                  return _vm.uploadFile(index)
-                                }
+                              model: {
+                                value: file.title,
+                                callback: function($$v) {
+                                  _vm.$set(file, "title", $$v)
+                                },
+                                expression: "file.title"
                               }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "col-md-2" },
+                          [
+                            !file.uploaded
+                              ? _c(
+                                  "b-button",
+                                  {
+                                    staticClass: "float-right",
+                                    attrs: {
+                                      variant: "primary",
+                                      size: "sm",
+                                      disabled:
+                                        _vm.uploading === index ||
+                                        _vm.getFileInputState(index) === false
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.uploadFile(index)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                            Upload\n                        "
+                                    )
+                                  ]
+                                )
+                              : _vm._e()
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "row" },
+                        [
+                          _c(
+                            "b-form-invalid-feedback",
+                            {
+                              attrs: { id: "fileTitle" + index + "-feedback" }
                             },
-                            [_vm._v("Upload")]
+                            [
+                              _vm._v(
+                                "\n                        You must fill title field\n                    "
+                              )
+                            ]
                           )
-                        : _vm._e()
-                    ],
-                    1
+                        ],
+                        1
+                      )
+                    ]
                   )
                 }),
                 1
@@ -66374,11 +66491,7 @@ var render = function() {
               },
               on: { "dismiss-count-down": _vm.countDownChanged }
             },
-            [
-              _vm._v(
-                "\n            File too big, please select a file less than 2mb\n        "
-              )
-            ]
+            [_vm._v("\n            " + _vm._s(_vm.alertMessage) + "\n        ")]
           ),
           _vm._v(" "),
           _c(
@@ -66597,9 +66710,7 @@ var render = function() {
                 { key: file.id },
                 [
                   _vm._v(
-                    "\n            " +
-                      _vm._s(file.originalName) +
-                      "\n            "
+                    "\n            " + _vm._s(file.title) + "\n            "
                   ),
                   _c(
                     "b-button",
@@ -66608,10 +66719,11 @@ var render = function() {
                       attrs: {
                         variant: "primary",
                         size: "sm",
-                        href: "/api/file/download/" + file.id
+                        href: "/api/file/download/" + file.id,
+                        target: "_blank"
                       }
                     },
-                    [_vm._v("Download")]
+                    [_vm._v("View")]
                   )
                 ],
                 1

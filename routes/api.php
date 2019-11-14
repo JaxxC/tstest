@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::get('/forms', 'Api\FormController@index');
 Route::get('/form/{form}', 'Api\FormController@show');
-Route::get('/file/download/{file}', 'Api\FormFileController@download');
+Route::get('/file/view/{file}', 'Api\FormFileController@view');
 
 Route::post('/file/upload', 'Api\FormFileController@upload');
 Route::post('/form', 'Api\FormController@create');

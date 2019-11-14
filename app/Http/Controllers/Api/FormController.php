@@ -36,6 +36,7 @@ class FormController extends Controller
         foreach ($request->formFiles as $file){
             $files[] = [
                 'name' => $file['name'],
+                'title' => $file['title'],
                 'original_name' => $file['originalName']
             ];
         }

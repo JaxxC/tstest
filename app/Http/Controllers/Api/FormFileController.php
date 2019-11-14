@@ -34,8 +34,8 @@ class FormFileController extends Controller
      * @param FormFile $file
      * @return \Illuminate\Http\Response
      */
-    public function download(FormFile $file)
+    public function view(FormFile $file)
     {
-        return response()->download($file->path, $file->original_name);
+        return response()->file($file->path, ['Content-Disposition' => 'filename=' . $file->original_name]);
     }
 }

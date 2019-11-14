@@ -9,7 +9,7 @@ class FormFile extends Model
     public $timestamps = false;
     
     protected $fillable   = [
-        'form_id', 'name', 'original_name'
+        'form_id', 'name', 'original_name', 'title'
     ];
 
     /**

@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\FormFile;
+use App\Models\Form;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Http\Response;
 
@@ -31,8 +33,16 @@ class FileUploadTest extends TestCase
 
         $uploaded = storage_path('app/' . config('uploads.folder') . '/' .$content->fileName);
         $this->assertFileExists($uploaded);
-
+        
         @unlink($uploaded);
+    }
 
+    public function test_view_works()
+    {
+        $form = factory(Form::class)->create();
+        $file = $form->files()->save(factory(FormFile::class)->make());
+        $this->json('GET', '/api/file/view/' . $file->id)
+            ->assertStatus(Response::HTTP_OK)
+            ->assertHeader('Content-Disposition', 'filename=' . $file->original_name);
     }
 }

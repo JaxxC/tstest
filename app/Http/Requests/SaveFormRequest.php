@@ -25,8 +25,19 @@ class SaveFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'formFiles' => 'array'
+            'name' => 'required|string|max:255',
+            'formFiles' => 'required|array',
+            'formFiles.*.name' => 'required|string',
+            'formFiles.*.title' => 'required|string',
+            'formFiles.*.originalName' => 'required|string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'A title is required',
+            'formFiles.required'  => 'Files not added to form',
         ];
     }
 }

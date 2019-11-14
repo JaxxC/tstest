@@ -17,6 +17,7 @@ class FormFileResource extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'title' => $this->title,
             'originalName' => $this->original_name,
             'formId' => $this->form_id
         ];

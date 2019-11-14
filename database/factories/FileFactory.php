@@ -17,9 +17,10 @@ use Illuminate\Support\Str;
 */
 
 $factory->define(FormFile::class, function (Faker $faker) {
-    $fileName = $faker->file('/tmp', storage_path('app/' . config('uploads.folder')));
+    $fileName = $faker->file('/tmp', storage_path('app/' . config('uploads.folder')), false);
     return [
         'name' => $fileName,
+        'title' => $faker->sentence(2),
         'original_name' => $faker->word . '.' . $faker->fileExtension
     ];
 });

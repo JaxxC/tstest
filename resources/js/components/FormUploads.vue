@@ -58,7 +58,11 @@
         data() {
             return {
                 forms: [],
-                fields: [{ key: 'index', label: '#' },{ key: 'name', label: 'Form Name' }, { key: 'view', label: 'View' }],
+                fields: [
+                    { key: 'index', label: '#' },
+                    { key: 'name', label: 'Form Name' }, 
+                    { key: 'view', label: 'View' }
+                ],
                 activeForm: null
             }
         },
@@ -72,11 +76,13 @@
         methods: {
             viewForm(index){
                 axios.get(`/api/form/${index}`).then(
-                    response => {
+                    (response) => {
                         this.activeForm = response.data.data
                         this.$bvModal.show('modalViewForm')
                     }
-                )
+                ).catch((error) => {
+                    console.log(error.response)
+                })
             },
             formAdded(form){
                 this.forms.push(form)
