@@ -13,7 +13,8 @@ class FormFileController extends Controller
 
     /**
      * Upload new file.
-     *
+     * File renames after upload to random generated name for preventing
+     * issues with OS related forbidden characters in filename
      * @return \Illuminate\Http\Response
      */
     public function upload(UploadFileRequest $request)
@@ -30,7 +31,8 @@ class FormFileController extends Controller
 
     /**
      * Download file
-     * 
+     * File downloads with original name
+     *
      * @param FormFile $file
      * @return \Illuminate\Http\Response
      */
