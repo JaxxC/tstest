@@ -79,6 +79,11 @@
 </template>
 
 <script>
+    import formsRepository from '../repositories/forms'
+    import { CREATE_FORM } from '../store/types/forms'
+    import { DATA_ERROR } from '../store/types/data'
+    import { mapGetters } from 'vuex'
+    
     export default {
         data() {
             return {
@@ -93,7 +98,9 @@
                 submitted: false
             }
         },
-        
+        computed: {
+            ...mapGetters(['getErrorMessage']),
+        },
         methods: {
             addFile() {
                 this.$refs.files.click()
@@ -142,7 +149,7 @@
                 }
 
                 axios.post('/api/file/upload', data, config).then(
-                    response => {
+                    (response) => {
                         this.uploading = false
                         this.percentCompleted = 0
                         this.$set(this.files[index], 'uploaded', true)
@@ -162,17 +169,17 @@
                     return
                 }
                 
-                axios.post('/api/form', {
+                this.$store.dispatch(CREATE_FORM, {
                     name: this.name,
                     formFiles: this.uploaded
                 }).then(
                     (response) => {
                         this.$bvModal.hide('modalAddForm')
-                        this.$emit('form-added', response.data.data)
-                    }
-                ).catch((error) => {
-                    this.showError(error)
-                })
+                    }).catch((error) => {
+                        this.$store.commit(DATA_ERROR, error)
+                        this.showError()
+                    })
+                
             },
             hasNotUploadedFiles(){
                 return this.files.filter(item => !item.uploaded).length > 0
@@ -180,8 +187,8 @@
             countDownChanged(dismissCountDown) {
                 this.showAlert = dismissCountDown
             },
-            showError(error){
-                this.alertMessage = Object.values(error.response.data.errors).join('. ')
+            showError(){
+                this.alertMessage = this.getErrorMessage
                 this.showAlert = 5
             }
         }

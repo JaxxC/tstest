@@ -8,6 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import BootstrapVue from 'bootstrap-vue'
+import store from './store'
 
 Vue.use(BootstrapVue)
 /**
@@ -30,5 +31,6 @@ Vue.component('form-uploads', require('./components/FormUploads.vue').default);
  */
 
 const app = new Vue({
+    store,
     el: '#app',
 });
