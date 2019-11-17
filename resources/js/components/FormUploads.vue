@@ -9,7 +9,9 @@
                     </p>
                     <hr>
                     <p class="mb-0">
-                        Used latest Laravel+Vue, and Bootstrap lib
+                        Used latest Laravel+Vue, and Bootstrap lib.
+                        <a href='https://github.com/JaxxC/tstest/tree/master' target="_blank">Source code</a> <br>
+                        <a href='https://github.com/JaxxC/tstest/tree/vuex' target="_blank">Source code with Vuex usage</a>
                     </p>
                 </b-alert>
                 
