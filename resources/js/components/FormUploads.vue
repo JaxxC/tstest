@@ -9,7 +9,9 @@
                     </p>
                     <hr>
                     <p class="mb-0">
-                        Used latest Laravel+Vue, and Bootstrap lib
+                        Used latest Laravel+Vue, and Bootstrap lib.
+                        <a href='https://github.com/JaxxC/tstest/tree/master' target="_blank">Source code</a> <br>
+                        <a href='https://github.com/JaxxC/tstest/tree/vuex' target="_blank">Source code with Vuex usage</a>
                     </p>
                 </b-alert>
                 
@@ -17,14 +19,14 @@
                 <b-button block variant="primary" v-b-modal.modalAddForm class="my-4">Add Form</b-button>
                 
                 <b-modal id="modalAddForm" title="Add Form" hide-footer >
-                    <add-form-dialog v-on:form-added="formAdded"></add-form-dialog>
+                    <add-form-dialog></add-form-dialog>
                 </b-modal>
                 
                 <b-table
-                    v-if="forms.length"
+                    v-if="formsLoaded"
                     hover 
                     bordered 
-                    :items="forms"
+                    :items="getForms"
                     head-variant="dark"
                     :fields="fields"
                     >
@@ -43,7 +45,7 @@
                 <b-alert variant="warning" show v-else>No forms saved yet</b-alert>
                 
                 <b-modal id="modalViewForm" title="Form Files" ok-only>
-                    <view-form-dialog :form="activeForm" v-if="activeForm"></view-form-dialog>
+                    <view-form-dialog :form="getActiveForm" v-if="activeFormLoaded"></view-form-dialog>
                 </b-modal>
             </div>
         </div>
@@ -53,11 +55,13 @@
 <script>
     import AddFormDialog from './AddFormDialog.vue'
     import ViewFormDialog from './ViewFormDialog.vue'
+    import formsRepository from '../repositories/forms'
+    import { GET_FORMS, GET_FORM } from '../store/types/forms'
+    import { mapGetters } from 'vuex'
     
     export default {
         data() {
             return {
-                forms: [],
                 fields: [
                     { key: 'index', label: '#' },
                     { key: 'name', label: 'Form Name' }, 
@@ -66,26 +70,16 @@
                 activeForm: null
             }
         },
+        computed: {
+            ...mapGetters(['getForms', 'formsLoaded', 'getActiveForm', 'activeFormLoaded']),
+        },
         created() {
-            axios.get('/api/forms').then(
-                response => {
-                    this.forms = response.data.data
-                }
-            )
+            this.$store.dispatch(GET_FORMS);
         },
         methods: {
-            viewForm(index){
-                axios.get(`/api/form/${index}`).then(
-                    (response) => {
-                        this.activeForm = response.data.data
-                        this.$bvModal.show('modalViewForm')
-                    }
-                ).catch((error) => {
-                    console.log(error.response)
-                })
-            },
-            formAdded(form){
-                this.forms.push(form)
+            viewForm(id){
+                this.$store.dispatch(GET_FORM, id);
+                this.$bvModal.show('modalViewForm')
             }
         },
         components: {
